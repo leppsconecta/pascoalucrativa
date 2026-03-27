@@ -32,10 +32,14 @@ import {
   ChevronRight
 } from 'lucide-react';
 
+import eggMm from './assets/egg-mm.png';
+import eggBrigadeiro from './assets/egg-brigadeiro.png';
+import eggTruffle from './assets/egg-truffle.png';
+
 const carouselImages = [
-  "/egg-mm.png",
-  "/egg-brigadeiro.png",
-  "/egg-truffle.png"
+  eggMm,
+  eggBrigadeiro,
+  eggTruffle
 ];
 
 const BeforeAfterSlider = () => {
