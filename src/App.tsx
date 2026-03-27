@@ -37,6 +37,7 @@ import eggBrigadeiro from './assets/egg-brigadeiro.png';
 import eggTruffle from './assets/egg-truffle.png';
 import eggBefore from './assets/egg-before.png';
 import eggAfter from './assets/egg-after.png';
+import moneyReal from './assets/money-real.png';
 
 const carouselImages = [
   eggMm,
@@ -822,7 +823,7 @@ export default function App() {
             
             <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-2xl shadow-black/10">
               <img 
-                src="https://images.unsplash.com/photo-1618331835717-801e976710b2?q=80&w=1200&auto=format&fit=crop" 
+                src={moneyReal} 
                 alt="Sucesso Financeiro Real Brasileiro"
                 className="w-full h-[600px] object-cover hover:scale-105 transition-transform duration-700"
                 referrerPolicy="no-referrer"
