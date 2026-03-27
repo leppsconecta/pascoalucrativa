@@ -35,6 +35,8 @@ import {
 import eggMm from './assets/egg-mm.png';
 import eggBrigadeiro from './assets/egg-brigadeiro.png';
 import eggTruffle from './assets/egg-truffle.png';
+import eggBefore from './assets/egg-before.png';
+import eggAfter from './assets/egg-after.png';
 
 const carouselImages = [
   eggMm,
@@ -60,9 +62,9 @@ const BeforeAfterSlider = () => {
     >
       {/* After Image (Bottom) */}
       <img 
-        src="https://images.unsplash.com/photo-1542841791-192d99926524?q=80&w=1000&auto=format&fit=crop" 
+        src={eggAfter} 
         className="absolute inset-0 w-full h-full object-cover"
-        alt="After IA"
+        alt="depois da ia"
         referrerPolicy="no-referrer"
       />
       
@@ -72,9 +74,9 @@ const BeforeAfterSlider = () => {
         style={{ clipPath: `inset(0 ${100 - sliderPos}% 0 0)` }}
       >
         <img 
-          src="https://images.unsplash.com/photo-1542841791-192d99926524?q=80&w=1000&auto=format&fit=crop&blur=10" 
-          className="absolute inset-0 w-full h-full object-cover grayscale"
-          alt="Before IA"
+          src={eggBefore} 
+          className="absolute inset-0 w-full h-full object-cover"
+          alt="antes da ia"
           referrerPolicy="no-referrer"
         />
       </div>
