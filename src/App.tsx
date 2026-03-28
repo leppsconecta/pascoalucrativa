@@ -3,14 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  MessageCircle, 
-  Sparkles, 
-  CheckCircle2, 
-  ShieldCheck, 
-  CreditCard, 
+import { Routes, Route } from 'react-router-dom';
+import CapturePage from './CapturePage';
+import {
+  MessageCircle,
+  Sparkles,
+  CheckCircle2,
+  ShieldCheck,
+  CreditCard,
   ArrowRight,
   Smartphone,
   Camera,
@@ -56,26 +58,26 @@ const BeforeAfterSlider = () => {
   };
 
   return (
-    <div 
+    <div
       className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl cursor-ew-resize select-none"
       onMouseMove={handleMove}
       onTouchMove={handleMove}
     >
       {/* After Image (Bottom) */}
-      <img 
-        src={eggAfter} 
+      <img
+        src={eggAfter}
         className="absolute inset-0 w-full h-full object-cover"
         alt="depois da ia"
         referrerPolicy="no-referrer"
       />
-      
+
       {/* Before Image (Top) */}
-      <div 
+      <div
         className="absolute inset-0 w-full h-full overflow-hidden"
         style={{ clipPath: `inset(0 ${100 - sliderPos}% 0 0)` }}
       >
-        <img 
-          src={eggBefore} 
+        <img
+          src={eggBefore}
           className="absolute inset-0 w-full h-full object-cover"
           alt="antes da ia"
           referrerPolicy="no-referrer"
@@ -83,7 +85,7 @@ const BeforeAfterSlider = () => {
       </div>
 
       {/* Slider Handle */}
-      <div 
+      <div
         className="absolute top-0 bottom-0 w-1 bg-white shadow-lg z-10"
         style={{ left: `${sliderPos}%` }}
       >
@@ -104,7 +106,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export default function App() {
+export function LandingPage() {
   const [currentImage, setCurrentImage] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -270,7 +272,7 @@ export default function App() {
                 <h3 className="text-xl md:text-2xl font-normal bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent tracking-tight">
                   "{modules[activeStep].headerPhrase || "O que você vai aprender"}"
                 </h3>
-                <button 
+                <button
                   onClick={() => setIsModalOpen(false)}
                   className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 >
@@ -300,7 +302,7 @@ export default function App() {
                           {modules[activeStep].title}
                         </h4>
                       </div>
-                      
+
                       {modules[activeStep].content}
                     </motion.div>
                   </AnimatePresence>
@@ -310,34 +312,33 @@ export default function App() {
                 <div className="p-4 md:p-6 bg-gray-50/50 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="flex gap-1.5 md:gap-2 order-2 sm:order-1">
                     {modules.map((_, idx) => (
-                      <div 
+                      <div
                         key={idx}
-                        className={`h-1 md:h-1.5 rounded-full transition-all duration-300 ${
-                          idx === activeStep ? "w-6 md:w-8 bg-purple-600" : "w-1.5 md:w-2 bg-gray-200"
-                        }`}
+                        className={`h-1 md:h-1.5 rounded-full transition-all duration-300 ${idx === activeStep ? "w-6 md:w-8 bg-purple-600" : "w-1.5 md:w-2 bg-gray-200"
+                          }`}
                       />
                     ))}
                   </div>
 
                   <div className="flex items-center gap-2 md:gap-3 order-1 sm:order-2 w-full sm:w-auto justify-center sm:justify-end">
                     {activeStep > 0 && (
-                      <button 
+                      <button
                         onClick={() => setActiveStep(prev => prev - 1)}
                         className="p-2.5 md:p-3 rounded-xl border border-gray-200 text-satin-chocolate/60 hover:bg-white transition-all"
                       >
                         <ChevronLeft className="w-4 h-4 md:w-5 h-5" />
                       </button>
                     ) || <div className="w-[42px] md:w-[50px]" />}
-                    
+
                     {activeStep < modules.length - 1 ? (
-                      <button 
+                      <button
                         onClick={() => setActiveStep(prev => prev + 1)}
                         className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 md:px-6 py-2.5 md:py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-black text-[10px] md:text-sm tracking-widest uppercase hover:scale-[1.02] shadow-lg shadow-blue-500/20 transition-all"
                       >
                         PRÓXIMO <ChevronRight className="w-3.5 h-3.5 md:w-4 h-4" />
                       </button>
                     ) : (
-                      <button 
+                      <button
                         onClick={() => {
                           setIsModalOpen(false);
                           document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
@@ -365,7 +366,7 @@ export default function App() {
           <button className="hidden md:block text-sm font-medium hover:opacity-70 transition-opacity">
             Sorocaba, SP
           </button>
-          <motion.button 
+          <motion.button
             onClick={() => setIsModalOpen(true)}
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -379,7 +380,7 @@ export default function App() {
       {/* Hero Section */}
       <section className="relative pt-24 pb-12 md:pt-32 md:pb-20 px-6 overflow-hidden">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
@@ -393,10 +394,10 @@ export default function App() {
               Transforme sua Páscoa em <span className="text-chocolate-light italic font-serif">Renda Extra</span> em Sorocaba.
             </h1>
             <p className="text-xl text-satin-chocolate/70 mb-10 leading-relaxed max-w-xl">
-              O método completo para você fazer uma renda extra, do básico ao marketing.
+              aprenda a vender ovos de páscoa, você merece lucrar mais!
             </p>
             <div id="cta" className="flex flex-col sm:flex-row gap-4">
-              <motion.button 
+              <motion.button
                 onClick={() => setIsModalOpen(true)}
                 animate={{ scale: [1, 1.03, 1] }}
                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -407,10 +408,10 @@ export default function App() {
               </motion.button>
               <div className="flex items-center gap-3 px-4">
                 <div className="flex -space-x-2">
-                  {[1,2,3].map(i => (
-                    <img 
+                  {[1, 2, 3].map(i => (
+                    <img
                       key={i}
-                      src={`https://i.pravatar.cc/100?img=${i+10}`} 
+                      src={`https://i.pravatar.cc/100?img=${i + 10}`}
                       className="w-8 h-8 rounded-full border-2 border-white"
                       alt="Student"
                       referrerPolicy="no-referrer"
@@ -419,7 +420,7 @@ export default function App() {
                 </div>
                 <div className="h-5 overflow-hidden">
                   <AnimatePresence mode="wait">
-                    <motion.span 
+                    <motion.span
                       key={messageIndex}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -435,7 +436,7 @@ export default function App() {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1 }}
@@ -456,16 +457,16 @@ export default function App() {
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
-            
+
             {/* Carousel Controls */}
-            <button 
+            <button
               onClick={handlePrev}
               className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-300 z-10"
               aria-label="anterior"
             >
               <ChevronLeft className="w-6 h-6" />
             </button>
-            <button 
+            <button
               onClick={handleNext}
               className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-300 z-10"
               aria-label="próximo"
@@ -479,16 +480,15 @@ export default function App() {
                 <button
                   key={idx}
                   onClick={() => handleDotClick(idx)}
-                  className={`transition-all duration-300 rounded-full h-2 ${
-                    idx === currentImage ? "w-8 bg-white" : "w-2 bg-white/50 hover:bg-white/80"
-                  }`}
+                  className={`transition-all duration-300 rounded-full h-2 ${idx === currentImage ? "w-8 bg-white" : "w-2 bg-white/50 hover:bg-white/80"
+                    }`}
                   aria-label={`ir para slide ${idx + 1}`}
                 />
               ))}
             </div>
           </motion.div>
         </div>
-        
+
         {/* Background Elements */}
         <div className="absolute top-1/4 -right-20 w-96 h-96 bg-pastel-pink/30 rounded-full blur-3xl -z-10" />
         <div className="absolute bottom-0 -left-20 w-96 h-96 bg-soft-pink/40 rounded-full blur-3xl -z-10" />
@@ -507,7 +507,7 @@ export default function App() {
             >
               {/* iPhone Notch */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-7 bg-slate-900 rounded-b-3xl z-30" />
-              
+
               {/* WhatsApp UI */}
               <div className="h-full bg-[#E5DDD5] flex flex-col">
                 {/* Header */}
@@ -526,7 +526,7 @@ export default function App() {
                   <div className="bg-white rounded-2xl rounded-tl-none p-3 text-[11px] w-[85%] shadow-sm relative">
                     Oi! Vi seus ovos no Instagram 😍 Tem catálogo?
                   </div>
-                  
+
                   <div className="bg-[#E1FFC7] rounded-2xl rounded-tr-none p-3 text-[11px] w-[85%] ml-auto shadow-sm relative">
                     Olá! 🐣 Claro! Segue nosso catálogo completo. Qual sabor te interessou?
                   </div>
@@ -555,7 +555,7 @@ export default function App() {
                 </div>
               </div>
             </motion.div>
-            
+
             {/* Floating Accents */}
             <div className="absolute -top-10 -left-10 w-40 h-40 bg-pastel-pink/20 rounded-full blur-3xl -z-10" />
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-soft-pink/30 rounded-full blur-3xl -z-10" />
@@ -574,7 +574,7 @@ export default function App() {
               <p className="text-lg text-satin-chocolate/70 mb-12 leading-relaxed">
                 Transforme seu celular em uma máquina de vendas. Aprenda o passo a passo para profissionalizar seu atendimento e fechar pedidos todos os dias.
               </p>
-              
+
               <div className="grid grid-cols-2 gap-3 lg:flex lg:flex-col lg:gap-6">
                 {[
                   {
@@ -624,9 +624,9 @@ export default function App() {
       {/* AI Revolution Section */}
       <section className="py-12 md:py-24 px-6 bg-gradient-to-br from-soft-pink/40 via-blue-50/80 to-soft-pink/40 relative overflow-hidden border-y border-blue-200/30">
         {/* Tech Grid Background */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-             style={{ backgroundImage: 'radial-gradient(#2563eb 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }} />
-        
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{ backgroundImage: 'radial-gradient(#2563eb 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }} />
+
         <div className="max-w-7xl mx-auto text-center mb-20 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -639,7 +639,7 @@ export default function App() {
             <p className="text-xl text-satin-chocolate/70 max-w-2xl mx-auto mb-12">
               Sua vitrine de luxo sem gastar com fotógrafo. Use a tecnologia a seu favor.
             </p>
-            
+
             <div className="max-w-4xl mx-auto mb-20">
               <BeforeAfterSlider />
             </div>
@@ -679,7 +679,7 @@ export default function App() {
             >
               {/* Animated Glow Background */}
               <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-600/10 rounded-full blur-[80px] group-hover:bg-blue-600/30 transition-all duration-700" />
-              
+
               {/* Icon Container with Tech Style */}
               <div className="relative mb-4 md:mb-8">
                 <div className="absolute inset-0 bg-blue-600 blur-xl opacity-20 group-hover:opacity-40 transition-opacity" />
@@ -694,11 +694,11 @@ export default function App() {
               <p className="text-satin-chocolate/60 text-xs md:text-base leading-relaxed group-hover:text-satin-chocolate/80 transition-colors">
                 {item.desc}
               </p>
-              
+
               {/* Tech Corner Accents */}
               <div className="absolute top-4 right-4 w-2 h-2 border-t-2 border-r-2 border-blue-500/0 group-hover:border-blue-500/50 transition-all" />
               <div className="absolute bottom-4 left-4 w-2 h-2 border-b-2 border-l-2 border-blue-500/0 group-hover:border-blue-500/50 transition-all" />
-              
+
               {/* Scanning Line Effect */}
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/5 to-transparent h-1/2 w-full -translate-y-full group-hover:animate-[scan_2s_linear_infinite] pointer-events-none" />
             </motion.div>
@@ -725,7 +725,7 @@ export default function App() {
               Seu <span className="text-blue-600">Cardápio Profissional</span> pronto em minutos.
             </h2>
             <p className="text-xl text-satin-chocolate/70 leading-relaxed mb-10">
-              Não se preocupe com design complexo. Você vai aprender a criar um cardápio irresistível para seus produtos. 
+              Não se preocupe com design complexo. Você vai aprender a criar um cardápio irresistível para seus produtos.
               <span className="block mt-4 font-bold text-satin-chocolate">
                 E o melhor: nós preparamos um modelo exclusivo para você apenas editar e começar a vender!
               </span>
@@ -784,15 +784,15 @@ export default function App() {
             >
               Alcance & Lucro
             </motion.div>
-            
+
             <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-[0.9] text-satin-chocolate mb-8">
               Venda para as <span className="text-transparent bg-clip-text bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888]">pessoas certas</span>, na hora certa.
             </h2>
-            
+
             <p className="text-xl text-satin-chocolate/70 font-medium leading-relaxed max-w-xl mb-12">
               Não espere o cliente bater na sua porta. Use o poder do tráfego pago para atrair centenas de pedidos todos os dias através das redes sociais.
             </p>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
               {[
                 { icon: <Instagram className="w-5 h-5" />, label: "Instagram" },
@@ -820,19 +820,19 @@ export default function App() {
             {/* Modern Decorative Elements */}
             <div className="absolute -top-20 -right-20 w-64 h-64 bg-gradient-to-tr from-[#f09433] to-[#bc1888] rounded-full blur-[100px] opacity-20" />
             <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-400 rounded-full blur-[100px] opacity-10" />
-            
+
             <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-2xl shadow-black/10">
-              <img 
-                src={moneyReal} 
+              <img
+                src={moneyReal}
                 alt="Sucesso Financeiro Real Brasileiro"
                 className="w-full h-[600px] object-cover hover:scale-105 transition-transform duration-700"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              
+
               {/* Floating Success Cards (Notification Style) */}
               <div className="absolute inset-0 p-6 flex flex-col justify-center gap-4 md:gap-6 pointer-events-none">
-                <motion.div 
+                <motion.div
                   initial={{ x: -20, opacity: 0, scale: 0.9 }}
                   whileInView={{ x: 0, opacity: 1, scale: 1 }}
                   transition={{ duration: 0.6, delay: 0.2, type: "spring", bounce: 0.2 }}
@@ -848,7 +848,7 @@ export default function App() {
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                   initial={{ x: 20, opacity: 0, scale: 0.9 }}
                   whileInView={{ x: 0, opacity: 1, scale: 1 }}
                   transition={{ duration: 0.6, delay: 0.5, type: "spring", bounce: 0.2 }}
@@ -856,7 +856,7 @@ export default function App() {
                 >
                   <div className="w-10 h-10 bg-[#1877F2] rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20 shrink-0">
                     <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                     </svg>
                   </div>
                   <div className="flex-grow">
@@ -865,7 +865,7 @@ export default function App() {
                   </div>
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                   initial={{ x: -20, opacity: 0, scale: 0.9 }}
                   whileInView={{ x: 0, opacity: 1, scale: 1 }}
                   transition={{ duration: 0.6, delay: 0.8, type: "spring", bounce: 0.2 }}
@@ -873,7 +873,7 @@ export default function App() {
                 >
                   <div className="w-10 h-10 bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] rounded-xl flex items-center justify-center text-white shadow-lg shadow-pink-500/20 shrink-0">
                     <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current">
-                      <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.984 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.055 1.17-.248 1.805-.413 2.227-.217.562-.477.96-.896 1.382-.42.419-.819.679-1.381.896-.422.164-1.056.36-2.227.413-1.266.057-1.646.07-4.85.07s-3.585-.015-4.85-.074c-1.17-.055-1.805-.248-2.227-.413-.562-.217-.96-.477-1.382-.896-.419-.42-.679-.819-.896-1.381-.164-.422-.36-1.056-.413-2.227-.057-1.266-.07-1.646-.07-4.85s.016-3.585.071-4.85c.055-1.17.249-1.805.415-2.227.217-.562.477-.96.896-1.382.42-.419.819-.679 1.381-.896.422-.164 1.057-.36 2.227-.413 1.266-.057 1.646-.07 4.85-.07zM12 5.837a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                      <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.984 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.055 1.17-.248 1.805-.413 2.227-.217.562-.477.96-.896 1.382-.42.419-.819.679-1.381.896-.422.164-1.056.36-2.227.413-1.266.057-1.646.07-4.85.07s-3.585-.015-4.85-.074c-1.17-.055-1.805-.248-2.227-.413-.562-.217-.96-.477-1.382-.896-.419-.42-.679-.819-.896-1.381-.164-.422-.36-1.056-.413-2.227-.057-1.266-.07-1.646-.07-4.85s.016-3.585.071-4.85c.055-1.17.249-1.805.415-2.227.217-.562.477-.96.896-1.382.42-.419.819-.679 1.381-.896.422-.164 1.057-.36 2.227-.413 1.266-.057 1.646-.07 4.85-.07zM12 5.837a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
                     </svg>
                   </div>
                   <div className="flex-grow">
@@ -882,7 +882,7 @@ export default function App() {
                   </div>
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                   initial={{ x: 20, opacity: 0, scale: 0.9 }}
                   whileInView={{ x: 0, opacity: 1, scale: 1 }}
                   transition={{ duration: 0.6, delay: 1.1, type: "spring", bounce: 0.2 }}
@@ -890,7 +890,7 @@ export default function App() {
                 >
                   <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white shadow-lg shadow-black/20 shrink-0">
                     <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current">
-                      <path d="M12.525.02c1.31-.036 2.612.012 3.914.03.03 1.56.233 3.113 1.017 4.505.803 1.416 2.075 2.522 3.594 3.056.03 1.109.03 2.219.03 3.328-1.065-.163-2.13-.52-3.086-1.014-.98-.507-1.787-1.277-2.374-2.211-.01 4.481.044 8.962-.055 13.442-.149 2.227-1.195 4.368-3.005 5.676-2.015 1.456-4.826 1.756-7.082.772-2.102-.913-3.613-3.067-3.849-5.35-.357-3.445 2.125-6.749 5.547-7.241.55-.079 1.103-.079 1.652-.016v3.387c-.393-.082-.799-.072-1.194-.019-1.45.195-2.644 1.475-2.695 2.935-.107 1.569 1.051 2.972 2.56 3.21 1.48.233 3.028-.591 3.447-2.025.095-.322.102-.66.102-.996 0-5.978-.006-11.957.005-17.935z"/>
+                      <path d="M12.525.02c1.31-.036 2.612.012 3.914.03.03 1.56.233 3.113 1.017 4.505.803 1.416 2.075 2.522 3.594 3.056.03 1.109.03 2.219.03 3.328-1.065-.163-2.13-.52-3.086-1.014-.98-.507-1.787-1.277-2.374-2.211-.01 4.481.044 8.962-.055 13.442-.149 2.227-1.195 4.368-3.005 5.676-2.015 1.456-4.826 1.756-7.082.772-2.102-.913-3.613-3.067-3.849-5.35-.357-3.445 2.125-6.749 5.547-7.241.55-.079 1.103-.079 1.652-.016v3.387c-.393-.082-.799-.072-1.194-.019-1.45.195-2.644 1.475-2.695 2.935-.107 1.569 1.051 2.972 2.56 3.21 1.48.233 3.028-.591 3.447-2.025.095-.322.102-.66.102-.996 0-5.978-.006-11.957.005-17.935z" />
                     </svg>
                   </div>
                   <div className="flex-grow">
@@ -909,7 +909,7 @@ export default function App() {
         <div className="max-w-6xl mx-auto text-center relative">
           <div className="flex md:grid md:grid-cols-2 gap-4 items-stretch overflow-x-auto md:overflow-x-visible snap-x snap-mandatory pt-12 pb-12 md:pb-0 px-6 md:px-4">
             {/* Plan 2 - Most Bought (Vibrant & Modern Glass) */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -920,7 +920,7 @@ export default function App() {
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-1.5 rounded-full text-[10px] font-black tracking-[0.2em] uppercase whitespace-nowrap shadow-lg shadow-blue-500/20">
                   Mais Comprado
                 </div>
-                
+
                 <div className="text-center mb-8 md:mb-10">
                   <h3 className="text-[10px] md:text-sm font-black tracking-widest uppercase text-blue-600/60 mb-2">Plano Premium</h3>
                   <div className="flex items-baseline justify-center gap-1">
@@ -929,7 +929,7 @@ export default function App() {
                   </div>
                   <p className="text-satin-chocolate/40 text-[10px] font-bold tracking-widest uppercase mt-2">Pagamento Único</p>
                 </div>
-                
+
                 <ul className="text-left space-y-5 mb-10 flex-grow">
                   {[
                     "Como produzir os ovos",
@@ -954,7 +954,7 @@ export default function App() {
             </motion.div>
 
             {/* Plan 1 - Essencial (Solid & Minimal) */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -970,7 +970,7 @@ export default function App() {
                   </div>
                   <p className="text-satin-chocolate/20 text-[10px] font-bold tracking-widest uppercase mt-2">Pagamento Único</p>
                 </div>
-                
+
                 <ul className="text-left space-y-5 mb-10 flex-grow">
                   {[
                     "Como produzir os ovos",
@@ -1015,5 +1015,14 @@ export default function App() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/cpascoalucrativa" element={<CapturePage />} />
+    </Routes>
   );
 }
