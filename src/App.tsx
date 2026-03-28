@@ -178,27 +178,26 @@ export function LandingPage() {
     {
       id: "00",
       headerPhrase: "Vou te mostrar como você pode crescer!",
-      title: "Você no lugar certo!",
+      title: "Você fez a escolha certa!",
       color: "bg-pastel-pink/30",
       content: (
         <div className="space-y-4 text-satin-chocolate/70 leading-relaxed">
-          <p>Olá! Tudo bem com você? Eu preparei este treinamento para ir muito além da Páscoa. O que eu vou te ensinar aqui é um método que você pode aplicar em qualquer negócio. Os Ovos de Páscoa são apenas o gatilho para a sua evolução. ( uma Consultoria cobraria de você + de 1000 reais pelo que vou te ensinar )</p>
-          <p>Meu objetivo não é apenas te ensinar a produzir ovos de páscoa, até porque a internet está cheia de tutoriais gratuitos. Eu quero que você aprenda a usar as ferramentas certas e entenda a importância de cada uma delas no processo do seu negócio.</p>
+          <p>Oi! Eu criei esse treinamento pra ir muito além da Páscoa. Aqui você vai aprender um método que dá pra usar em qualquer negócio, os ovos são só o começo.</p>
+          <p>A ideia não é só te ensinar a produzir, porque isso você encontra fácil na internet. O foco aqui é te mostrar como usar as ferramentas certas e entender como tudo se conecta pra fazer seu negócio crescer de verdade.</p>
         </div>
       )
     },
     {
       id: "01",
       headerPhrase: "Vamos construir o seu próprio negócio.",
-      title: "O Mercado de Sucesso",
+      title: "Ovos de Páscoa ou qualquer negócio",
       color: "bg-blue-50",
       content: (
         <div className="space-y-4 text-satin-chocolate/70 leading-relaxed">
-          <p>Eu não estou aqui apenas para te ensinar a fazer ovos de Páscoa, mas para te ensinar a vender, desde a produção até as estratégias e ferramentas certas.</p>
-          <p>Neste módulo, você vai receber dicas práticas para produzir ovos de qualidade. Mas o verdadeiro diferencial vem depois.</p>
-          <p>Vou te guiar passo a passo para vender, escalar e aumentar seu faturamento.</p>
-          <p>Seguindo este método, você poderá aplicar em qualquer negócio e alcançar resultados reais.</p>
-          <p>Receitas você encontra na internet. Aqui, você aprende a vender de verdade e transformar conhecimento em lucro.</p>
+          <p>Vender ovos de Páscoa é só o começo. Aqui, isso funciona como um gatilho pra você dar um passo adiante e aprender a vender de verdade, seja qual for o seu produto ou serviço.</p>
+          <p>No Módulo 1, eu reuni os melhores conteúdos pra te ajudar a produzir ovos com qualidade. Mas o ponto principal vem depois: saber vender.</p>
+          <p>É por isso que você está aqui. Mais do que produção, você precisa entender como transformar isso em resultado.</p>
+          <p className="font-bold">Bora pra cima e boas vendas!</p>
         </div>
       )
     },
@@ -255,7 +254,7 @@ export function LandingPage() {
       color: "bg-orange-100",
       content: (
         <div className="space-y-4 text-satin-chocolate/70 leading-relaxed">
-          <p>"Agora que você já tem o produto em mãos, o WhatsApp configurado, imagens profissionais e seu cardápio pronto, chegou a hora de organizar suas redes sociais. Nós vamos padronizar seus perfis e garantir que tudo esteja conectado corretamente. Eu vou te ajudar a configurar sua vitrine digital do zero: vamos entender como criar um anúncio, onde você deve clicar, quanto investir e como analisar se o resultado está sendo positivo."</p>
+          <p>Agora que você já tem o produto em mãos, o WhatsApp configurado, imagens profissionais e seu cardápio pronto, chegou a hora de organizar suas redes sociais. Nós vamos padronizar seus perfis e garantir que tudo esteja conectado corretamente. Eu vou te ajudar a configurar sua vitrine digital do zero: vamos entender como criar um anúncio, onde você deve clicar, quanto investir e como analisar se o resultado está sendo positivo.</p>
         </div>
       )
     },
@@ -727,7 +726,7 @@ export function LandingPage() {
                 }`}
             >
               {item.isText ? (
-                <p className="text-xl md:text-2xl font-black italic text-satin-chocolate/80 leading-tight lowercase">
+                <p className="text-xl md:text-2xl font-black italic text-satin-chocolate/80 leading-tight">
                   {item.title}
                 </p>
               ) : (
@@ -783,9 +782,6 @@ export function LandingPage() {
             </h2>
             <p className="text-xl text-satin-chocolate/70 leading-relaxed mb-10">
               Não se preocupe com design complexo. Você vai aprender a criar um cardápio irresistível para seus produtos.
-              <span className="block mt-4 font-bold text-satin-chocolate">
-                E o melhor: nós preparamos um modelo exclusivo para você apenas editar e começar a vender!
-              </span>
             </p>
           </motion.div>
 
@@ -979,11 +975,18 @@ export function LandingPage() {
 
               <div className="text-center mb-8 md:mb-10">
                 <h3 className="text-[10px] md:text-sm font-black tracking-widest uppercase text-blue-600/60 mb-2">plano premium</h3>
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-base md:text-lg font-bold text-blue-600">r$</span>
-                  <span className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 to-purple-600">
-                    {discountApplied ? "57,99" : "97,99"}
-                  </span>
+                <div className="flex flex-col items-center justify-center">
+                  {discountApplied && (
+                    <span className="text-sm md:text-base font-bold text-satin-chocolate/40 line-through mb-1 uppercase tracking-widest">
+                      de r$ 97,99 por
+                    </span>
+                  )}
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="text-base md:text-lg font-bold text-blue-600 uppercase">r$</span>
+                    <span className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 to-purple-600 leading-none">
+                      {discountApplied ? "57,99" : "97,99"}
+                    </span>
+                  </div>
                 </div>
                 {discountApplied ? (
                   <div className="mt-4 inline-flex items-center gap-2 px-4 py-1 bg-red-500/10 text-red-500 rounded-full">
@@ -996,17 +999,18 @@ export function LandingPage() {
 
               <ul className="text-left space-y-5 mb-10 flex-grow">
                 {[
-                  "como produzir os ovos",
-                  "configurar whatsapp",
-                  "ia na produção de imagens",
-                  "como vender na sua cidade",
-                  "dicas de abordagem"
+                  "Como produzir os ovos",
+                  "Configurar whatsapp",
+                  "IA na produção de imagens",
+                  "Como vender na sua cidade",
+                  "Criar cardápio Físico e Online",
+                  "Dicas de abordagem"
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-4 text-satin-chocolate/80 group/item">
                     <div className="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center group-hover/item:bg-blue-500 group-hover/item:text-white transition-all duration-300">
                       <CheckCircle2 className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-sm font-semibold tracking-tight lowercase">{item}</span>
+                    <span className="text-sm font-semibold tracking-tight">{item}</span>
                   </li>
                 ))}
               </ul>
