@@ -31,7 +31,8 @@ import {
   Rocket,
   X,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from 'lucide-react';
 
 import eggMm from './assets/egg-mm.png';
@@ -112,6 +113,19 @@ export function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [messageIndex, setMessageIndex] = useState(0);
+  const [isDiscountSearching, setIsDiscountSearching] = useState(false);
+  const [discountApplied, setDiscountApplied] = useState(() => {
+    const saved = localStorage.getItem('discountApplied');
+    return saved === 'true';
+  });
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const endTime = localStorage.getItem('discountEndTime');
+    if (endTime) {
+      const remaining = Math.floor((parseInt(endTime) - Date.now()) / 1000);
+      return remaining > 0 ? remaining : 0;
+    }
+    return 1800; // 30 minutes
+  });
 
   const testimonialMessages = [
     "Muito além de vender ovos",
@@ -126,6 +140,39 @@ export function LandingPage() {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (discountApplied && timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [discountApplied, timeLeft]);
+
+  const handleApplyDiscount = () => {
+    setIsDiscountSearching(true);
+    setTimeout(() => {
+      setIsDiscountSearching(false);
+      setDiscountApplied(true);
+      const endTime = Date.now() + 1800 * 1000;
+      localStorage.setItem('discountEndTime', endTime.toString());
+      localStorage.setItem('discountApplied', 'true');
+      setTimeLeft(1800);
+    }, 4000);
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const modules = [
     {
@@ -394,7 +441,7 @@ export function LandingPage() {
               Transforme sua Páscoa em <span className="text-chocolate-light italic font-serif">Renda Extra</span> em Sorocaba.
             </h1>
             <p className="text-xl text-satin-chocolate/70 mb-10 leading-relaxed max-w-xl">
-              aprenda a vender ovos de páscoa, você merece lucrar mais!
+              Aprenda a vender ovos de páscoa, você merece lucrar mais!
             </p>
             <div id="cta" className="flex flex-col sm:flex-row gap-4">
               <motion.button
@@ -659,14 +706,13 @@ export function LandingPage() {
               desc: "Textos persuasivos."
             },
             {
-              icon: <Video className="w-6 h-6 md:w-8 md:h-8 text-white" />,
-              title: "Vídeos com IA",
-              desc: "Vídeos perfeitos com IA."
-            },
-            {
               icon: <Wand2 className="w-6 h-6 md:w-8 md:h-8 text-white" />,
               title: "Assistente",
               desc: "Seu assistente de sucesso!"
+            },
+            {
+              isText: true,
+              title: "Use a IA ao seu favor! Surpreenda seu cliente."
             }
           ].map((item, idx) => (
             <motion.div
@@ -675,32 +721,43 @@ export function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.2 }}
-              className="bg-blue-950/5 backdrop-blur-2xl p-5 md:p-8 rounded-3xl shadow-[0_0_50px_-12px_rgba(37,99,235,0.1)] hover:shadow-[0_0_50px_-12px_rgba(37,99,235,0.3)] hover:scale-[1.02] transition-all duration-500 border border-blue-500/20 hover:border-blue-500 group relative overflow-hidden flex flex-col items-center text-center"
+              className={`p-5 md:p-8 rounded-3xl transition-all duration-500 group relative overflow-hidden flex flex-col items-center text-center ${item.isText
+                ? "bg-transparent border-none flex items-center justify-center p-0"
+                : "bg-blue-950/5 backdrop-blur-2xl shadow-[0_0_50px_-12px_rgba(37,99,235,0.1)] hover:shadow-[0_0_50px_-12px_rgba(37,99,235,0.3)] hover:scale-[1.02] border border-blue-500/20 hover:border-blue-500"
+                }`}
             >
-              {/* Animated Glow Background */}
-              <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-600/10 rounded-full blur-[80px] group-hover:bg-blue-600/30 transition-all duration-700" />
+              {item.isText ? (
+                <p className="text-xl md:text-2xl font-black italic text-satin-chocolate/80 leading-tight lowercase">
+                  {item.title}
+                </p>
+              ) : (
+                <>
+                  {/* Animated Glow Background */}
+                  <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-600/10 rounded-full blur-[80px] group-hover:bg-blue-600/30 transition-all duration-700" />
 
-              {/* Icon Container with Tech Style */}
-              <div className="relative mb-4 md:mb-8">
-                <div className="absolute inset-0 bg-blue-600 blur-xl opacity-20 group-hover:opacity-40 transition-opacity" />
-                <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-blue-600/20 group-hover:rotate-6 transition-transform">
-                  {item.icon}
-                </div>
-              </div>
+                  {/* Icon Container with Tech Style */}
+                  <div className="relative mb-4 md:mb-8">
+                    <div className="absolute inset-0 bg-blue-600 blur-xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                    <div className="relative bg-gradient-to-br from-blue-600 to-blue-700 w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-blue-600/20 group-hover:rotate-6 transition-transform">
+                      {item.icon}
+                    </div>
+                  </div>
 
-              <h3 className="text-lg md:text-2xl font-bold mb-2 md:mb-4 text-satin-chocolate group-hover:text-blue-700 transition-colors leading-tight">
-                {item.title}
-              </h3>
-              <p className="text-satin-chocolate/60 text-xs md:text-base leading-relaxed group-hover:text-satin-chocolate/80 transition-colors">
-                {item.desc}
-              </p>
+                  <h3 className="text-lg md:text-2xl font-bold mb-2 md:mb-4 text-satin-chocolate group-hover:text-blue-700 transition-colors leading-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-satin-chocolate/60 text-xs md:text-base leading-relaxed group-hover:text-satin-chocolate/80 transition-colors">
+                    {item.desc}
+                  </p>
 
-              {/* Tech Corner Accents */}
-              <div className="absolute top-4 right-4 w-2 h-2 border-t-2 border-r-2 border-blue-500/0 group-hover:border-blue-500/50 transition-all" />
-              <div className="absolute bottom-4 left-4 w-2 h-2 border-b-2 border-l-2 border-blue-500/0 group-hover:border-blue-500/50 transition-all" />
+                  {/* Tech Corner Accents */}
+                  <div className="absolute top-4 right-4 w-2 h-2 border-t-2 border-r-2 border-blue-500/0 group-hover:border-blue-500/50 transition-all" />
+                  <div className="absolute bottom-4 left-4 w-2 h-2 border-b-2 border-l-2 border-blue-500/0 group-hover:border-blue-500/50 transition-all" />
 
-              {/* Scanning Line Effect */}
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/5 to-transparent h-1/2 w-full -translate-y-full group-hover:animate-[scan_2s_linear_infinite] pointer-events-none" />
+                  {/* Scanning Line Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/5 to-transparent h-1/2 w-full -translate-y-full group-hover:animate-[scan_2s_linear_infinite] pointer-events-none" />
+                </>
+              )}
             </motion.div>
           ))}
         </div>
@@ -906,91 +963,68 @@ export function LandingPage() {
 
       {/* Guarantee & Pricing */}
       <section id="pricing" className="pt-0 pb-12 md:py-24 px-6 overflow-hidden">
-        <div className="max-w-6xl mx-auto text-center relative">
-          <div className="flex md:grid md:grid-cols-2 gap-4 items-stretch overflow-x-auto md:overflow-x-visible snap-x snap-mandatory pt-12 pb-12 md:pb-0 px-6 md:px-4">
-            {/* Plan 2 - Most Bought (Vibrant & Modern Glass) */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="relative flex flex-col min-w-[calc(100vw-100px)] md:min-w-0 snap-center md:order-2 group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-pink-600/20 blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-700" />
-              <div className="relative flex-grow flex flex-col bg-white/60 backdrop-blur-3xl border-2 border-blue-500/50 p-5 md:p-6 rounded-[2.5rem] shadow-2xl shadow-blue-500/10 transition-transform duration-500">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-1.5 rounded-full text-[10px] font-black tracking-[0.2em] uppercase whitespace-nowrap shadow-lg shadow-blue-500/20">
-                  Mais Comprado
-                </div>
-
-                <div className="text-center mb-8 md:mb-10">
-                  <h3 className="text-[10px] md:text-sm font-black tracking-widest uppercase text-blue-600/60 mb-2">Plano Premium</h3>
-                  <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-base md:text-lg font-bold text-blue-600">R$</span>
-                    <span className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 to-purple-600">57,99</span>
-                  </div>
-                  <p className="text-satin-chocolate/40 text-[10px] font-bold tracking-widest uppercase mt-2">Pagamento Único</p>
-                </div>
-
-                <ul className="text-left space-y-5 mb-10 flex-grow">
-                  {[
-                    "Como produzir os ovos",
-                    "Configurar WhatsApp",
-                    "IA na produção de Imagens",
-                    "Como vender na sua cidade",
-                    "Dicas de abordagem"
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-4 text-satin-chocolate/80 group/item">
-                      <div className="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center group-hover/item:bg-blue-500 group-hover/item:text-white transition-all duration-300">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                      </div>
-                      <span className="text-sm font-semibold tracking-tight">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <button className="w-full py-5 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black text-sm tracking-widest uppercase shadow-xl shadow-blue-600/20 hover:scale-[1.02] active:scale-95 transition-all duration-300">
-                  QUERO O ACESSO COMPLETO
-                </button>
+        <div className="max-w-4xl mx-auto text-center relative px-6">
+          {/* Plan - Premium (Vibrant & Modern Glass) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative flex flex-col w-full max-w-lg mx-auto group"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-pink-600/20 blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-700" />
+            <div className="relative flex-grow flex flex-col bg-white/60 backdrop-blur-3xl border-2 border-blue-500/50 p-6 md:p-8 rounded-[2.5rem] shadow-2xl shadow-blue-500/10 transition-transform duration-500">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-1.5 rounded-full text-[10px] font-black tracking-[0.2em] uppercase whitespace-nowrap shadow-lg shadow-blue-500/20">
+                mais comprado
               </div>
-            </motion.div>
 
-            {/* Plan 1 - Essencial (Solid & Minimal) */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="relative flex flex-col min-w-[calc(100vw-100px)] md:min-w-0 snap-center md:order-1"
-            >
-              <div className="relative flex-grow flex flex-col bg-white border border-satin-chocolate/5 p-5 md:p-6 rounded-[2.5rem] shadow-soft">
-                <div className="text-center mb-8 md:mb-10">
-                  <h3 className="text-[10px] md:text-sm font-black tracking-widest uppercase text-satin-chocolate/30 mb-2">Plano Essencial</h3>
-                  <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-base md:text-lg font-bold text-satin-chocolate/40">R$</span>
-                    <span className="text-5xl md:text-6xl font-black text-satin-chocolate/40">47,99</span>
-                  </div>
-                  <p className="text-satin-chocolate/20 text-[10px] font-bold tracking-widest uppercase mt-2">Pagamento Único</p>
+              <div className="text-center mb-8 md:mb-10">
+                <h3 className="text-[10px] md:text-sm font-black tracking-widest uppercase text-blue-600/60 mb-2">plano premium</h3>
+                <div className="flex items-baseline justify-center gap-1">
+                  <span className="text-base md:text-lg font-bold text-blue-600">r$</span>
+                  <span className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 to-purple-600">
+                    {discountApplied ? "57,99" : "97,99"}
+                  </span>
                 </div>
-
-                <ul className="text-left space-y-5 mb-10 flex-grow">
-                  {[
-                    "Como produzir os ovos",
-                    "Configurar WhatsApp"
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-center gap-4 text-satin-chocolate/40">
-                      <div className="w-6 h-6 rounded-full bg-satin-chocolate/5 flex items-center justify-center">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                      </div>
-                      <span className="text-sm font-medium tracking-tight">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <button className="w-full py-5 rounded-2xl border-2 border-satin-chocolate/10 text-satin-chocolate/40 font-black text-sm tracking-widest uppercase hover:bg-satin-chocolate/5 transition-all duration-300">
-                  ESCOLHER ESTE
-                </button>
+                {discountApplied ? (
+                  <div className="mt-4 inline-flex items-center gap-2 px-4 py-1 bg-red-500/10 text-red-500 rounded-full">
+                    <span className="text-[10px] font-black tracking-widest uppercase animate-pulse">oferta expira em: {formatTime(timeLeft)}</span>
+                  </div>
+                ) : (
+                  <p className="text-satin-chocolate/40 text-[10px] font-bold tracking-widest uppercase mt-2">pagamento único</p>
+                )}
               </div>
-            </motion.div>
-          </div>
+
+              <ul className="text-left space-y-5 mb-10 flex-grow">
+                {[
+                  "como produzir os ovos",
+                  "configurar whatsapp",
+                  "ia na produção de imagens",
+                  "como vender na sua cidade",
+                  "dicas de abordagem"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-4 text-satin-chocolate/80 group/item">
+                    <div className="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center group-hover/item:bg-blue-500 group-hover/item:text-white transition-all duration-300">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    </div>
+                    <span className="text-sm font-semibold tracking-tight lowercase">{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {discountApplied ? (
+                <button className="w-full py-5 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black text-sm tracking-widest uppercase shadow-xl shadow-blue-600/20 hover:scale-[1.02] active:scale-95 transition-all duration-300 lowercase">
+                  quero o acesso completo
+                </button>
+              ) : (
+                <button
+                  onClick={handleApplyDiscount}
+                  className="w-full py-5 rounded-2xl bg-satin-chocolate text-white font-black text-sm tracking-widest uppercase shadow-xl shadow-satin-chocolate/20 hover:scale-[1.02] active:scale-95 transition-all duration-300 lowercase"
+                >
+                  solicitar desconto
+                </button>
+              )}
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -1014,6 +1048,80 @@ export function LandingPage() {
           </motion.div>
         </div>
       </div>
+
+      {/* Floating Discount Search Modal */}
+      <AnimatePresence>
+        {isDiscountSearching && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md px-6"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="bg-white rounded-[2.5rem] p-8 md:p-12 max-w-md w-full text-center shadow-2xl relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gray-100">
+                <motion.div
+                  initial={{ width: "0%" }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 4, ease: "easeInOut" }}
+                  className="h-full bg-blue-600"
+                />
+              </div>
+
+              <div className="mb-8 relative inline-block">
+                <div className="absolute inset-0 bg-blue-600 blur-2xl opacity-20 animate-pulse" />
+                <div className="relative bg-blue-50 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto">
+                  <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+                </div>
+              </div>
+
+              <h3 className="text-2xl font-bold text-satin-chocolate mb-4 lowercase">buscando melhor desconto...</h3>
+              <p className="text-satin-chocolate/60 leading-relaxed lowercase">
+                estamos analisando seu perfil para liberar a melhor oferta disponível no momento.
+              </p>
+
+              <div className="mt-8 space-y-3">
+                {[
+                  "verificando disponibilidade",
+                  "aplicando cupom especial",
+                  "finalizando oferta"
+                ].map((text, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 1.2 }}
+                    className="flex items-center gap-3 text-xs font-bold text-blue-600/60 lowercase"
+                  >
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                    {text}
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating "O que vou aprender" Button */}
+      <AnimatePresence>
+        {!isModalOpen && !isDiscountSearching && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            onClick={() => setIsModalOpen(true)}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 md:left-auto md:right-8 md:translate-x-0 z-50 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-8 py-4 rounded-full font-black text-sm tracking-widest uppercase shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-3 animate-[pulse-custom_2s_infinite]"
+          >
+            <div className="w-2 h-2 rounded-full bg-white animate-ping" />
+            o que vou aprender
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
