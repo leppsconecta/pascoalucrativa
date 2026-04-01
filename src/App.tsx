@@ -41,11 +41,32 @@ import eggTruffle from './assets/egg-truffle.png';
 import eggBefore from './assets/egg-before.png';
 import eggAfter from './assets/egg-after.png';
 import moneyReal from './assets/money-real.png';
+import menuMockup from './assets/menu-mockup.png';
+import clothingMockup from './assets/clothing-mockup.png';
+import mechPartsMockup from './assets/mech-parts-mockup.png';
 
 const carouselImages = [
   eggMm,
   eggBrigadeiro,
   eggTruffle
+];
+
+const portfolioImages = [
+  {
+    url: menuMockup,
+    title: "Menu de restaurante",
+    category: "gastronomia"
+  },
+  {
+    url: clothingMockup,
+    title: "Catálogo de roupa",
+    category: "moda"
+  },
+  {
+    url: mechPartsMockup,
+    title: "Catálogo de peças",
+    category: "mecânica"
+  }
 ];
 
 const BeforeAfterSlider = () => {
@@ -114,6 +135,13 @@ export function LandingPage() {
   const [activeStep, setActiveStep] = useState(0);
   const [messageIndex, setMessageIndex] = useState(0);
   const [isDiscountSearching, setIsDiscountSearching] = useState(false);
+  const [isLeadSubmitted, setIsLeadSubmitted] = useState(false);
+  const [portfolioIndex, setPortfolioIndex] = useState(0);
+  const [leadFormData, setLeadFormData] = useState({
+    nome: '',
+    email: '',
+    telefone: ''
+  });
   const [discountApplied, setDiscountApplied] = useState(() => {
     const saved = localStorage.getItem('discountApplied');
     return saved === 'true';
@@ -134,10 +162,26 @@ export function LandingPage() {
     "Apliquei na minha loja de roupa"
   ];
 
+  const formatPhone = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    const limited = numbers.slice(0, 11);
+    if (limited.length <= 2) return limited;
+    if (limited.length <= 3) return `${limited.slice(0, 2)} ${limited.slice(2)}`;
+    if (limited.length <= 7) return `${limited.slice(0, 2)} ${limited.slice(2, 3)} ${limited.slice(3)}`;
+    return `${limited.slice(0, 2)} ${limited.slice(2, 3)} ${limited.slice(3, 7)}-${limited.slice(7)}`;
+  };
+
+  useEffect(() => {
+    const portfolioTimer = setInterval(() => {
+      setPortfolioIndex((prev) => (prev + 1) % portfolioImages.length);
+    }, 5000);
+    return () => clearInterval(portfolioTimer);
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setMessageIndex((prev) => (prev + 1) % testimonialMessages.length);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
@@ -697,17 +741,17 @@ export function LandingPage() {
             {
               icon: <Camera className="w-6 h-6 md:w-8 md:h-8 text-white" />,
               title: "Fotos com IA",
-              desc: "Crie imagens deliciosas."
+              desc: "Crie imagens dos seus produtos ou serviços"
             },
             {
               icon: <FileText className="w-6 h-6 md:w-8 md:h-8 text-white" />,
-              title: "Textos com IA",
-              desc: "Textos persuasivos."
+              title: "Textos",
+              desc: "Como criar os melhores textos para seus projetos"
             },
             {
               icon: <Wand2 className="w-6 h-6 md:w-8 md:h-8 text-white" />,
               title: "Assistente",
-              desc: "Seu assistente de sucesso!"
+              desc: "Crie um agente para te auxiliar nas decisões e criatividade"
             },
             {
               isText: true,
@@ -766,56 +810,76 @@ export function LandingPage() {
         <div className="absolute -top-20 -left-20 w-80 h-80 bg-pastel-pink/20 rounded-full blur-3xl" />
       </section>
 
-      {/* Menu Section */}
-      <section className="py-12 md:py-24 px-6 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+      {/* Menu Section (Portfolio Transformation) */}
+      <section id="portfolio" className="py-12 md:py-32 px-6 bg-white overflow-hidden scroll-mt-20">
+        <div className="max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-2 gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
+            className="order-2 lg:order-1"
           >
             <div className="inline-block px-4 py-1 rounded-full bg-blue-100 text-blue-600 text-xs font-black tracking-widest uppercase mb-8">
-              Design & Praticidade
+              Design & Portfólio
             </div>
-            <h2 className="text-4xl md:text-6xl font-black text-satin-chocolate mb-8 leading-tight">
-              Seu <span className="text-blue-600">Cardápio Profissional</span> pronto em minutos.
+            <h2 className="text-4xl md:text-6xl font-black text-satin-chocolate mb-8 leading-[1.1] tracking-tight">
+              Aprenda a criar seu <span className="text-blue-600 italic font-serif">Catálogo de Serviços</span> ou produto!
             </h2>
-            <p className="text-xl text-satin-chocolate/70 leading-relaxed mb-10">
-              Não se preocupe com design complexo. Você vai aprender a criar um cardápio irresistível para seus produtos.
-            </p>
+            <div className="space-y-6">
+              <p className="text-2xl font-bold text-satin-chocolate">
+                Sua empresa precisa de um portfólio.
+              </p>
+              <p className="text-xl text-satin-chocolate/70 leading-relaxed">
+                Não se preocupe com design complexo. Você vai aprender a criar um catálogo completo! Seja um menu de restaurante ou um catálogo de peças.
+              </p>
+            </div>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative"
+            className="relative order-1 lg:order-2 w-full max-w-xl mx-auto lg:max-w-none"
           >
-            {/* Visual representation of a menu */}
-            <div className="relative z-10 glass p-8 rounded-[3rem] border-white/40 shadow-2xl">
-              <div className="space-y-6">
-                <div className="flex justify-between items-center border-b border-gray-100 pb-4">
-                  <h3 className="text-2xl font-black text-satin-chocolate">Cardápio de Páscoa</h3>
-                  <ChefHat className="w-8 h-8 text-blue-600" />
-                </div>
-                {[
-                  { name: "Ovo de Pistache", price: "R$ 85,00", desc: "Chocolate belga com recheio cremoso de pistache." },
-                  { name: "Ovo de Avelã", price: "R$ 75,00", desc: "Crocante de avelã com chocolate meio amargo." },
-                  { name: "Ovo de Ninho", price: "R$ 65,00", desc: "Leite ninho com nutella original." }
-                ].map((item, i) => (
-                  <div key={i} className="flex justify-between items-start gap-4 p-4 rounded-2xl hover:bg-blue-50 transition-colors">
-                    <div>
-                      <h4 className="font-bold text-satin-chocolate">{item.name}</h4>
-                      <p className="text-xs text-satin-chocolate/60">{item.desc}</p>
-                    </div>
-                    <span className="font-black text-blue-600 whitespace-nowrap">{item.price}</span>
-                  </div>
+            {/* Background Elements */}
+            <div className="absolute -inset-10 bg-gradient-to-br from-blue-600/5 via-purple-600/5 to-pink-600/5 rounded-[4rem] blur-3xl -z-10" />
+            
+            <div className="relative aspect-[4/3] md:aspect-video lg:aspect-square group cursor-pointer overflow-hidden rounded-[3rem] shadow-2xl border border-white/40">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={portfolioIndex}
+                  initial={{ opacity: 0, scale: 1.1, x: 20 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, x: -20 }}
+                  transition={{ duration: 0.6, ease: [0.43, 0.13, 0.23, 0.96] }}
+                  className="absolute inset-0"
+                >
+                  <img
+                    src={portfolioImages[portfolioIndex].url}
+                    alt={portfolioImages[portfolioIndex].title}
+                    className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
+                  />
+                </motion.div>
+              </AnimatePresence>
+
+
+              {/* Progress Indicators */}
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+                {portfolioImages.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setPortfolioIndex(i)}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      i === portfolioIndex ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/60'
+                    }`}
+                  />
                 ))}
               </div>
             </div>
-            {/* Decorative elements */}
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-200 rounded-full blur-3xl -z-10 opacity-50" />
-            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-pastel-pink rounded-full blur-3xl -z-10 opacity-30" />
+
+            {/* Decorative Elements */}
+            <div className="absolute -top-6 -right-6 w-24 h-24 bg-blue-600 rounded-3xl -z-10 opacity-20 blur-xl animate-pulse" />
+            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-purple-600 rounded-full -z-10 opacity-10 blur-2xl animate-bounce" />
           </motion.div>
         </div>
       </section>
@@ -957,80 +1021,144 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Guarantee & Pricing */}
-      <section id="pricing" className="pt-0 pb-12 md:py-24 px-6 overflow-hidden">
-        <div className="max-w-4xl mx-auto text-center relative px-6">
-          {/* Plan - Premium (Vibrant & Modern Glass) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="relative flex flex-col w-full max-w-lg mx-auto group"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-purple-600/10 to-pink-600/20 blur-3xl opacity-30 group-hover:opacity-50 transition-opacity duration-700" />
-            <div className="relative flex-grow flex flex-col bg-white/60 backdrop-blur-3xl border-2 border-blue-500/50 p-6 md:p-8 rounded-[2.5rem] shadow-2xl shadow-blue-500/10 transition-transform duration-500">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-1.5 rounded-full text-[10px] font-black tracking-[0.2em] uppercase whitespace-nowrap shadow-lg shadow-blue-500/20">
-                mais comprado
-              </div>
-
-              <div className="text-center mb-8 md:mb-10">
-                <h3 className="text-[10px] md:text-sm font-black tracking-widest uppercase text-blue-600/60 mb-2">plano premium</h3>
-                <div className="flex flex-col items-center justify-center">
-                  {discountApplied && (
-                    <span className="text-sm md:text-base font-bold text-satin-chocolate/40 line-through mb-1 uppercase tracking-widest">
-                      de r$ 97,99 por
-                    </span>
-                  )}
-                  <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-base md:text-lg font-bold text-blue-600 uppercase">r$</span>
-                    <span className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 to-purple-600 leading-none">
-                      {discountApplied ? "57,99" : "97,99"}
-                    </span>
-                  </div>
+      {/* Lead Capture Section */}
+      <section id="capture" className="py-12 md:py-32 px-6 bg-white overflow-hidden scroll-mt-20">
+        <div className="max-w-7xl mx-auto">
+          {!isLeadSubmitted ? (
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              {/* Left Column - Marketing Copy */}
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="space-y-8"
+              >
+                <div className="space-y-4">
+                  <h2 className="text-3xl md:text-5xl font-bold text-satin-chocolate leading-[1.1] tracking-tight">
+                    Só preencha este formulário, se realmente você <span className="text-chocolate-light italic font-serif">quer mudar de vida!</span>
+                  </h2>
+                  <p className="text-xl text-satin-chocolate/70 leading-relaxed">
+                    Alimente os seus sonhos, e não os sonhos do seu patrão;
+                  </p>
+                  <p className="text-2xl font-bold text-satin-chocolate">
+                    Seja um empreendedor de sucesso.
+                  </p>
                 </div>
-                {discountApplied ? (
-                  <div className="mt-4 inline-flex items-center gap-2 px-4 py-1 bg-red-500/10 text-red-500 rounded-full">
-                    <span className="text-[10px] font-black tracking-widest uppercase animate-pulse">oferta expira em: {formatTime(timeLeft)}</span>
-                  </div>
-                ) : (
-                  <p className="text-satin-chocolate/40 text-[10px] font-bold tracking-widest uppercase mt-2">pagamento único</p>
-                )}
+
+                <div className="pt-4">
+                  <h3 className="text-4xl md:text-6xl font-bold text-satin-chocolate tracking-tight">
+                    Agora é a <span className="text-chocolate-light italic font-serif underline decoration-pastel-pink/30 decoration-8 underline-offset-8">hora!</span>
+                  </h3>
+                </div>
+
+              </motion.div>
+
+              {/* Right Column - Form */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="relative"
+              >
+                {/* Background Glow */}
+                <div className="absolute -inset-4 bg-gradient-to-br from-blue-600/5 via-purple-600/5 to-pink-600/5 rounded-[3rem] blur-2xl" />
+                
+                <div className="relative glass p-8 md:p-12 rounded-[3rem] border-white/40 shadow-2xl">
+                  <form 
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      setIsLeadSubmitted(true);
+                      window.scrollTo({ top: document.getElementById('capture')?.offsetTop || 0, behavior: 'smooth' });
+                    }} 
+                    className="space-y-6"
+                  >
+                    <div className="space-y-2">
+                      <label htmlFor="nome" className="block text-xs font-black tracking-widest text-satin-chocolate/40 uppercase">nome</label>
+                      <input
+                        id="nome"
+                        required
+                        type="text"
+                        placeholder="seu nome completo"
+                        className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:border-blue-500/20 focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all text-satin-chocolate placeholder:text-satin-chocolate/30 lowercase text-lg"
+                        value={leadFormData.nome}
+                        onChange={(e) => setLeadFormData({ ...leadFormData, nome: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="telefone" className="block text-xs font-black tracking-widest text-satin-chocolate/40 uppercase">telefone</label>
+                      <input
+                        id="telefone"
+                        required
+                        type="tel"
+                        placeholder="15 9 1234-1234"
+                        className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:border-blue-500/20 focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all text-satin-chocolate placeholder:text-satin-chocolate/30 lowercase text-lg"
+                        value={leadFormData.telefone}
+                        onChange={(e) => setLeadFormData({ ...leadFormData, telefone: formatPhone(e.target.value) })}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="email" className="block text-xs font-black tracking-widest text-satin-chocolate/40 uppercase">e-mail</label>
+                      <input
+                        id="email"
+                        required
+                        type="email"
+                        placeholder="seu@email.com"
+                        className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-transparent focus:border-blue-500/20 focus:bg-white focus:ring-4 focus:ring-blue-500/5 transition-all text-satin-chocolate placeholder:text-satin-chocolate/30 lowercase text-lg"
+                        value={leadFormData.email}
+                        onChange={(e) => setLeadFormData({ ...leadFormData, email: e.target.value })}
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full py-5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-black text-sm tracking-widest uppercase shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all duration-300"
+                    >
+                      garantir meu acesso
+                    </button>
+                  </form>
+                </div>
+              </motion.div>
+            </div>
+          ) : (
+            /* Success Screen */
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="max-w-2xl mx-auto text-center space-y-8 py-12"
+            >
+              <div className="relative inline-block">
+                <div className="absolute inset-0 bg-green-500/20 rounded-full blur-2xl animate-pulse" />
+                <div className="relative w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
+                  <CheckCircle2 className="w-12 h-12 text-green-500" />
+                </div>
               </div>
 
-              <ul className="text-left space-y-5 mb-10 flex-grow">
-                {[
-                  "Como produzir os ovos",
-                  "Configurar whatsapp",
-                  "IA na produção de imagens",
-                  "Como vender na sua cidade",
-                  "Criar cardápio Físico e Online",
-                  "Dicas de abordagem"
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-4 text-satin-chocolate/80 group/item">
-                    <div className="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center group-hover/item:bg-blue-500 group-hover/item:text-white transition-all duration-300">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                    </div>
-                    <span className="text-sm font-semibold tracking-tight">{item}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="space-y-4">
+                <h2 className="text-4xl md:text-6xl font-black text-satin-chocolate tracking-tight">
+                  Parabéns <span className="text-chocolate-light italic font-serif capitalize">{leadFormData.nome.split(' ')[0]}</span>
+                </h2>
+                <p className="text-2xl md:text-3xl font-bold text-satin-chocolate/80">
+                  Você deu o primeiro passo!
+                </p>
+                <p className="text-lg text-satin-chocolate/60 leading-relaxed max-w-lg mx-auto">
+                  Em breve iremos enviar mais informações para você entrar na primeira turma do curso
+                </p>
+              </div>
 
-              {discountApplied ? (
-                <button className="w-full py-5 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black text-sm tracking-widest uppercase shadow-xl shadow-blue-600/20 hover:scale-[1.02] active:scale-95 transition-all duration-300 lowercase">
-                  quero o acesso completo
-                </button>
-              ) : (
-                <button
-                  onClick={handleApplyDiscount}
-                  className="w-full py-5 rounded-2xl bg-satin-chocolate text-white font-black text-sm tracking-widest uppercase shadow-xl shadow-satin-chocolate/20 hover:scale-[1.02] active:scale-95 transition-all duration-300 lowercase"
-                >
-                  solicitar desconto
-                </button>
-              )}
-            </div>
-          </motion.div>
+
+
+              {/* Floating Party Effects Mockup */}
+              <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden -z-10">
+                <Sparkles className="absolute top-1/4 left-1/4 w-8 h-8 text-pastel-pink/30 animate-bounce" />
+                <Sparkles className="absolute bottom-1/4 right-1/4 w-8 h-8 text-blue-200/40 animate-pulse" />
+              </div>
+            </motion.div>
+          )}
         </div>
       </section>
+
 
       {/* Marquee de Apoio */}
       <div className="w-full bg-white border-t border-satin-chocolate/10 py-6 md:py-10 overflow-hidden">
