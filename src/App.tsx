@@ -32,8 +32,10 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  Loader2
+  Loader2,
+  Mail
 } from 'lucide-react';
+import { supabase } from './lib/supabase';
 
 import eggMm from './assets/egg-mm.png';
 import eggBrigadeiro from './assets/egg-brigadeiro.png';
@@ -44,11 +46,26 @@ import moneyReal from './assets/money-real.png';
 import menuMockup from './assets/menu-mockup.png';
 import clothingMockup from './assets/clothing-mockup.png';
 import mechPartsMockup from './assets/mech-parts-mockup.png';
+import tshirtBefore from './assets/tshirt-before.png';
+import tshirtAfter from './assets/tshirt-after.png';
+import mechBefore from './assets/mech-before.png';
+import mechAfter from './assets/mech-after.png';
+import heroCake from './assets/hero-cake.png';
+import heroRestaurant from './assets/hero-restaurant.png';
+import heroSuccess from './assets/hero-success.png';
+import crmContracts from './assets/crm-contracts.png';
+import crmLeads from './assets/crm-leads.png';
+import crmOmnichannel from './assets/crm-omnichannel.jpg';
 
 const carouselImages = [
-  eggMm,
-  eggBrigadeiro,
-  eggTruffle
+  heroCake,
+  heroRestaurant,
+  heroSuccess
+];
+
+const crmImages = [
+  crmOmnichannel,
+  crmLeads
 ];
 
 const portfolioImages = [
@@ -69,7 +86,31 @@ const portfolioImages = [
   }
 ];
 
-const BeforeAfterSlider = () => {
+const transformationSets = [
+  {
+    id: 'eggs',
+    title: 'Produtos de Páscoa',
+    before: eggBefore,
+    after: eggAfter,
+    label: ''
+  },
+  {
+    id: 'fashion',
+    title: 'Moda e Vestuário',
+    before: tshirtBefore,
+    after: tshirtAfter,
+    label: ''
+  },
+  {
+    id: 'mechanic',
+    title: 'Fachada e Serviços',
+    before: mechBefore,
+    after: mechAfter,
+    label: ''
+  }
+];
+
+const BeforeAfterSlider = ({ before, after, altBefore, altAfter }: { before: string, after: string, altBefore: string, altAfter: string }) => {
   const [sliderPos, setSliderPos] = useState(50);
 
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
@@ -81,15 +122,15 @@ const BeforeAfterSlider = () => {
 
   return (
     <div
-      className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl cursor-ew-resize select-none"
+      className="relative w-full aspect-square md:aspect-video rounded-3xl overflow-hidden shadow-2xl cursor-ew-resize select-none"
       onMouseMove={handleMove}
       onTouchMove={handleMove}
     >
       {/* After Image (Bottom) */}
       <img
-        src={eggAfter}
+        src={after}
         className="absolute inset-0 w-full h-full object-cover"
-        alt="depois da ia"
+        alt={altAfter}
         referrerPolicy="no-referrer"
       />
 
@@ -99,9 +140,9 @@ const BeforeAfterSlider = () => {
         style={{ clipPath: `inset(0 ${100 - sliderPos}% 0 0)` }}
       >
         <img
-          src={eggBefore}
+          src={before}
           className="absolute inset-0 w-full h-full object-cover"
-          alt="antes da ia"
+          alt={altBefore}
           referrerPolicy="no-referrer"
         />
       </div>
@@ -137,6 +178,9 @@ export function LandingPage() {
   const [isDiscountSearching, setIsDiscountSearching] = useState(false);
   const [isLeadSubmitted, setIsLeadSubmitted] = useState(false);
   const [portfolioIndex, setPortfolioIndex] = useState(0);
+  const [sliderIndex, setSliderIndex] = useState(0);
+  const [crmIndex, setCrmIndex] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [leadFormData, setLeadFormData] = useState({
     nome: '',
     email: '',
@@ -156,10 +200,10 @@ export function LandingPage() {
   });
 
   const testimonialMessages = [
-    "Muito além de vender ovos",
-    "Eu adorei o curso",
-    "Faz total sentido o método",
-    "Apliquei na minha loja de roupa"
+    "Quem realmente quer sair do CLT ou fazer um upgrade na sua empresa",
+    "Alimente seu sonho, e não do seu patrão",
+    "Saia do CLT e abra seu próprio negócio",
+    "Você é capaz!"
   ];
 
   const formatPhone = (value: string) => {
@@ -176,6 +220,13 @@ export function LandingPage() {
       setPortfolioIndex((prev) => (prev + 1) % portfolioImages.length);
     }, 5000);
     return () => clearInterval(portfolioTimer);
+  }, []);
+
+  useEffect(() => {
+    const crmTimer = setInterval(() => {
+      setCrmIndex((prev) => (prev + 1) % crmImages.length);
+    }, 5000);
+    return () => clearInterval(crmTimer);
   }, []);
 
   useEffect(() => {
@@ -226,22 +277,22 @@ export function LandingPage() {
       color: "bg-pastel-pink/30",
       content: (
         <div className="space-y-4 text-satin-chocolate/70 leading-relaxed">
-          <p>Oi! Eu criei esse treinamento pra ir muito além da Páscoa. Aqui você vai aprender um método que dá pra usar em qualquer negócio, os ovos são só o começo.</p>
-          <p>A ideia não é só te ensinar a produzir, porque isso você encontra fácil na internet. O foco aqui é te mostrar como usar as ferramentas certas e entender como tudo se conecta pra fazer seu negócio crescer de verdade.</p>
+          <p>Oi! Eu criei esse curso para pessoas que têm o desejo de se tornar empresárias. Este é o pontapé inicial para você sair do CLT ou até mesmo elevar o seu nível de conhecimento.</p>
+          <p>Eu sei que não é fácil. Sei da sua luta e do seu sonho de ter o próprio negócio.</p>
+          <p>Por isso, você vai aprender a usar as ferramentas certas a seu favor, de forma estratégica e prática, para começar a construir algo realmente seu.</p>
         </div>
       )
     },
     {
       id: "01",
-      headerPhrase: "Vamos construir o seu próprio negócio.",
-      title: "Ovos de Páscoa ou qualquer negócio",
+      headerPhrase: "Encontre o seu propósito e comece hoje.",
+      title: "Escolhendo a Minha Área",
       color: "bg-blue-50",
       content: (
         <div className="space-y-4 text-satin-chocolate/70 leading-relaxed">
-          <p>Vender ovos de Páscoa é só o começo. Aqui, isso funciona como um gatilho pra você dar um passo adiante e aprender a vender de verdade, seja qual for o seu produto ou serviço.</p>
-          <p>No Módulo 1, eu reuni os melhores conteúdos pra te ajudar a produzir ovos com qualidade. Mas o ponto principal vem depois: saber vender.</p>
-          <p>É por isso que você está aqui. Mais do que produção, você precisa entender como transformar isso em resultado.</p>
-          <p className="font-bold">Bora pra cima e boas vendas!</p>
+          <p className="font-bold text-satin-chocolate">Este módulo é a chave para o seu sucesso.</p>
+          <p>O primeiro passo é escolher uma área com a qual você se identifique, seja vender bolo de pote, abrir uma loja de roupas, montar um pet shop ou vender produtos de beleza.</p>
+          <p>Você precisa dar o primeiro passo. Depois disso, vamos aprender a utilizar as ferramentas corretas para o seu negócio.</p>
         </div>
       )
     },
@@ -282,12 +333,13 @@ export function LandingPage() {
     },
     {
       id: "04",
-      headerPhrase: "Vamos escalar os seus resultados juntos.",
-      title: "Cardápio Online e Físico",
+      headerPhrase: "Crie uma vitrine que venda por você.",
+      title: "Catálogo, Portfolio, Menu",
       color: "bg-blue-100",
       content: (
         <div className="space-y-4 text-satin-chocolate/70 leading-relaxed">
-          <p>Além do catálogo, muitos clientes ainda preferem o formato tradicional de folheto. Eu vou te ensinar a criar essa arte. Inclusive, eu já deixei um modelo pronto para você. Clicou, editou, baixou, enviou para seu cliente.</p>
+          <p>Sua empresa precisa de uma vitrine que venda por você. Seja para apresentar um menu de restaurante, um catálogo de peças ou um portfólio de serviços, o impacto visual é o que define o fechamento do negócio.</p>
+          <p>Não se preocupe com técnicas complexas de design. Eu vou te ensinar a criar um catálogo completo e profissional do zero!</p>
         </div>
       )
     },
@@ -299,17 +351,6 @@ export function LandingPage() {
       content: (
         <div className="space-y-4 text-satin-chocolate/70 leading-relaxed">
           <p>Agora que você já tem o produto em mãos, o WhatsApp configurado, imagens profissionais e seu cardápio pronto, chegou a hora de organizar suas redes sociais. Nós vamos padronizar seus perfis e garantir que tudo esteja conectado corretamente. Eu vou te ajudar a configurar sua vitrine digital do zero: vamos entender como criar um anúncio, onde você deve clicar, quanto investir e como analisar se o resultado está sendo positivo.</p>
-        </div>
-      )
-    },
-    {
-      id: "06",
-      headerPhrase: "Sua nova jornada começa agora!",
-      title: "Minhas Dicas de Ouro e Prospecção",
-      color: "bg-yellow-100",
-      content: (
-        <div className="space-y-4 text-satin-chocolate/70 leading-relaxed">
-          <p>Eu trabalho com marketing há 11 anos e já ajudei empresas de diversos nichos a alcançarem o sucesso. Por isso, eu não quero apenas te ensinar a vender; eu vou te incentivar a ser um empreendedor de verdade, não importa se o seu produto é Ovo de Páscoa ou qualquer outro. Este módulo é um bônus especial que preparei para você. Mais do que dicas, eu quero te entregar o caminho para você sair do CLT ou escalar o seu próprio negócio. Vamos transformar sua mentalidade juntos.</p>
         </div>
       )
     }
@@ -431,7 +472,7 @@ export function LandingPage() {
                       <button
                         onClick={() => {
                           setIsModalOpen(false);
-                          document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+                          document.getElementById('capture')?.scrollIntoView({ behavior: 'smooth' });
                         }}
                         className="flex-1 sm:flex-none px-4 md:px-8 py-3 md:py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl font-black text-[10px] md:text-sm tracking-widest uppercase shadow-xl shadow-purple-500/30 hover:scale-[1.05] transition-all whitespace-nowrap"
                       >
@@ -448,22 +489,14 @@ export function LandingPage() {
 
       {/* Header / Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center glass rounded-full px-4 md:px-6 py-2.5 md:py-3 shadow-soft border border-pastel-brown/10">
-          <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
-            <ChefHat className="w-5 h-5 md:w-6 md:h-6 text-satin-chocolate" />
-            <span className="font-bold text-base md:text-lg tracking-tight whitespace-nowrap">Páscoa Lucrativa</span>
+        <div className="max-w-7xl mx-auto flex justify-center items-center glass rounded-full px-4 md:px-6 py-2.5 md:py-3 shadow-soft border border-pastel-brown/10 relative">
+          <div className="flex items-center gap-1.5 md:gap-2 shrink-0 text-blue-600">
+            <Rocket className="w-5 h-5 md:w-6 md:h-6" />
+            <span className="font-black text-base md:text-lg tracking-tight whitespace-nowrap">1º Passo para o sucesso!</span>
           </div>
-          <button className="hidden md:block text-sm font-medium hover:opacity-70 transition-opacity">
+          <button className="absolute right-6 hidden md:block text-sm font-medium hover:opacity-70 transition-opacity">
             Sorocaba, SP
           </button>
-          <motion.button
-            onClick={() => setIsModalOpen(true)}
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 md:px-5 py-2 rounded-xl md:rounded-full text-[11px] md:text-sm font-normal md:font-black tracking-tight md:tracking-widest md:uppercase hover:scale-110 shadow-lg shadow-blue-500/20 transition-all leading-tight md:leading-normal whitespace-nowrap"
-          >
-            O que vou aprender
-          </motion.button>
         </div>
       </nav>
 
@@ -480,12 +513,23 @@ export function LandingPage() {
               <Sparkles className="w-4 h-4" />
               <span>Exclusivo para Sorocaba e Região</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold leading-[1.1] mb-6 tracking-tight">
-              Transforme sua Páscoa em <span className="text-chocolate-light italic font-serif">Renda Extra</span> em Sorocaba.
+             <h1 className="text-5xl md:text-7xl font-bold leading-[1.1] mb-6 tracking-tight">
+              Este curso é para <span className="text-chocolate-light italic font-serif">Quem quer mudar</span> de vida!
             </h1>
-            <p className="text-xl text-satin-chocolate/70 mb-10 leading-relaxed max-w-xl">
-              Aprenda a vender ovos de páscoa, você merece lucrar mais!
-            </p>
+            <div className="h-16 md:h-12 overflow-hidden mb-10">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={messageIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
+                  className="text-xl md:text-2xl text-satin-chocolate/70 leading-tight md:leading-relaxed max-w-xl font-medium"
+                >
+                  {testimonialMessages[messageIndex]}
+                </motion.p>
+              </AnimatePresence>
+            </div>
             <div id="cta" className="flex flex-col sm:flex-row gap-4">
               <motion.button
                 onClick={() => setIsModalOpen(true)}
@@ -496,33 +540,14 @@ export function LandingPage() {
                 O que vou aprender
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </motion.button>
-              <div className="flex items-center gap-3 px-4">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3].map(i => (
-                    <img
-                      key={i}
-                      src={`https://i.pravatar.cc/100?img=${i + 10}`}
-                      className="w-8 h-8 rounded-full border-2 border-white"
-                      alt="Student"
-                      referrerPolicy="no-referrer"
-                    />
-                  ))}
-                </div>
-                <div className="h-5 overflow-hidden">
-                  <AnimatePresence mode="wait">
-                    <motion.span
-                      key={messageIndex}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
-                      className="text-sm font-medium text-satin-chocolate/60 block whitespace-nowrap"
-                    >
-                      {testimonialMessages[messageIndex]}
-                    </motion.span>
-                  </AnimatePresence>
-                </div>
-              </div>
+
+              <button
+                onClick={() => document.getElementById('capture')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-8 py-4 md:px-8 md:py-4 rounded-xl md:rounded-2xl text-base md:text-lg font-normal md:font-black text-satin-chocolate bg-white border-2 border-satin-chocolate/10 shadow-lg hover:bg-gray-50 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group leading-tight whitespace-nowrap"
+              >
+                Quero evoluir agora
+                <Rocket className="w-5 h-5 group-hover:-translate-y-1 transition-transform text-blue-600" />
+              </button>
             </div>
           </motion.div>
 
@@ -542,7 +567,7 @@ export function LandingPage() {
                 exit={{ opacity: 0, x: direction > 0 ? -100 : 100 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
                 className="absolute inset-0 w-full h-full object-cover"
-                alt="ovos de páscoa artesanais"
+                alt="histórias de sucesso e transformação"
                 referrerPolicy="no-referrer"
               />
             </AnimatePresence>
@@ -582,6 +607,53 @@ export function LandingPage() {
         {/* Background Elements */}
         <div className="absolute top-1/4 -right-20 w-96 h-96 bg-pastel-pink/30 rounded-full blur-3xl -z-10" />
         <div className="absolute bottom-0 -left-20 w-96 h-96 bg-soft-pink/40 rounded-full blur-3xl -z-10" />
+      </section>
+
+      {/* CRM Tools Section */}
+      <section className="py-12 md:py-24 px-6 bg-gray-50/50 overflow-hidden border-y border-gray-100">
+        <div className="max-w-7xl mx-auto flex flex-col items-center">
+          <div className="text-center max-w-3xl mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-satin-chocolate via-blue-600 to-satin-chocolate bg-clip-text text-transparent">
+              Quais ferramentas eu devo utilizar?
+            </h2>
+            <p className="text-lg md:text-xl text-satin-chocolate/70 leading-relaxed font-medium">
+              Você vai aprender tudo sobre CRM, ferramenta que as multinacionais usam para gerenciar pedidos, clientes, estoques e muito mais
+            </p>
+          </div>
+
+          <div className="w-full max-w-5xl">
+            <div className="relative group">
+              <div className="relative aspect-[16/9] md:aspect-[21/9] rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white bg-slate-950">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={crmIndex}
+                    src={crmImages[crmIndex]}
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.8, ease: "anticipate" }}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    alt="interface de gerenciamento crm"
+                  />
+                </AnimatePresence>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+              </div>
+
+              {/* Navigation Dots */}
+              <div className="flex justify-center gap-3 mt-8">
+                {crmImages.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCrmIndex(idx)}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      crmIndex === idx ? 'w-10 bg-blue-600 shadow-lg shadow-blue-500/20' : 'w-2 bg-blue-600/20 hover:bg-blue-600/40'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* WhatsApp Automation Section */}
@@ -675,7 +747,7 @@ export function LandingPage() {
                   {
                     icon: <LayoutGrid className="w-5 h-5 lg:w-6 lg:h-6 text-orange-600" />,
                     title: "Catálogo Profissional",
-                    desc: "Organize seus ovos de Páscoa e produtos em um catálogo prático que facilita a escolha do cliente."
+                    desc: "Aprenda criar um catálogo dos seus produtos ou serviços dentro do WhatsApp. Facilite a vida dos seus clientes"
                   },
                   {
                     icon: <MessageCircle className="w-5 h-5 lg:w-6 lg:h-6 text-blue-600" />,
@@ -731,7 +803,33 @@ export function LandingPage() {
             </p>
 
             <div className="max-w-4xl mx-auto mb-20">
-              <BeforeAfterSlider />
+              <div className="flex flex-col gap-8">
+                <div className="flex justify-center gap-3">
+                  {transformationSets.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setSliderIndex(idx)}
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        sliderIndex === idx ? 'w-10 bg-blue-600 shadow-lg shadow-blue-500/20' : 'w-2 bg-blue-600/20 hover:bg-blue-600/40'
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                <motion.div
+                  key={sliderIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <BeforeAfterSlider 
+                    before={transformationSets[sliderIndex].before}
+                    after={transformationSets[sliderIndex].after}
+                    altBefore={`antes - ${transformationSets[sliderIndex].title}`}
+                    altAfter={`depois - ${transformationSets[sliderIndex].title}`}
+                  />
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -1065,10 +1163,39 @@ export function LandingPage() {
                 
                 <div className="relative glass p-8 md:p-12 rounded-[3rem] border-white/40 shadow-2xl">
                   <form 
-                    onSubmit={(e) => {
+                    onSubmit={async (e) => {
                       e.preventDefault();
-                      setIsLeadSubmitted(true);
-                      window.scrollTo({ top: document.getElementById('capture')?.offsetTop || 0, behavior: 'smooth' });
+                      setIsSubmitting(true);
+                      
+                      try {
+                        const { error } = await supabase
+                          .schema('captura')
+                          .from('leads')
+                          .insert([
+                            { 
+                              name: leadFormData.nome, 
+                              email: leadFormData.email, 
+                              whatsapp: leadFormData.telefone,
+                              phone: leadFormData.telefone,
+                              type: '1-passo',
+                              metadata: {
+                                source: 'landing-page',
+                                project: '1º passo para o sucesso!',
+                                path: window.location.pathname
+                              }
+                            }
+                          ]);
+
+                        if (error) throw error;
+
+                        setIsLeadSubmitted(true);
+                        window.scrollTo({ top: document.getElementById('capture')?.offsetTop || 0, behavior: 'smooth' });
+                      } catch (err) {
+                        console.error('Error saving lead:', err);
+                        alert('Ocorreu um erro ao salvar seu contato. Por favor, tente novamente.');
+                      } finally {
+                        setIsSubmitting(false);
+                      }
                     }} 
                     className="space-y-6"
                   >
@@ -1113,9 +1240,17 @@ export function LandingPage() {
 
                     <button
                       type="submit"
-                      className="w-full py-5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-black text-sm tracking-widest uppercase shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all duration-300"
+                      disabled={isSubmitting}
+                      className="w-full py-5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-black text-sm tracking-widest uppercase shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-wait flex items-center justify-center gap-3"
                     >
-                      garantir meu acesso
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          processando...
+                        </>
+                      ) : (
+                        'garantir meu acesso'
+                      )}
                     </button>
                   </form>
                 </div>

@@ -99,8 +99,8 @@ export default function CapturePage() {
                 {[
                   {
                     step: "01",
-                    title: "produção impecável",
-                    desc: "técnicas profissionais para criar ovos que encantam pelo sabor e visual.",
+                    title: "posicionamento digital",
+                    desc: "técnicas profissionais para criar um perfil que encanta pelo visual e autoridade.",
                     icon: <Target className="w-5 h-5" />
                   },
                   {
@@ -141,7 +141,7 @@ export default function CapturePage() {
                   <Clock className="w-8 h-8" /> aguarde a liberação
                 </h2>
                 <p className="text-white/80 mb-10 max-w-xl mx-auto lowercase leading-relaxed">
-                  em breve você receberá o cronograma completo direto no seu celular. prepare-se para transformar sua páscoa!
+                  em breve você receberá o cronograma completo direto no seu celular. prepare-se para transformar sua vida!
                 </p>
                 <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-sm font-bold lowercase">
                   <ShieldCheck className="w-4 h-4 text-green-400" /> reserva confirmada para membresia soroempregos
